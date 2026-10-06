@@ -18,8 +18,9 @@ public class LoanDto {
     private String gameName;
 
     private LocalDate startDate;
-
     private LocalDate endDate;
+
+    private LocalDate searchDate;
 
     /**
      * @return id
