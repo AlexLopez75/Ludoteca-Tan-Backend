@@ -1,13 +1,12 @@
 package com.ccsw.tutorial.loan;
 
 import com.ccsw.tutorial.clients.ClientsRepository;
+import com.ccsw.tutorial.common.exceptions.BusinessException;
 import com.ccsw.tutorial.game.GameRepository;
-import com.ccsw.tutorial.loan.LoanRepository;
 import com.ccsw.tutorial.loan.model.Loan;
 import com.ccsw.tutorial.loan.model.LoanDto;
 import com.ccsw.tutorial.loan.model.LoanSearchDto;
 import jakarta.transaction.Transactional;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.domain.Specification;
@@ -29,6 +28,8 @@ public class LoanServiceImpl implements LoanService {
 
     @Autowired
     private GameRepository gameRepository;
+
+    private BusinessException businessException;
 
     @Override
     public Loan get(Long id) {
@@ -94,13 +95,18 @@ public class LoanServiceImpl implements LoanService {
 
         long days = ChronoUnit.DAYS.between(data.getStartDate(), data.getEndDate());
         LocalDate day = data.getStartDate();
+        int maxDays = 14;
 
         if (data.getEndDate().isBefore(data.getStartDate())) {
-            throw new RuntimeException("End date cannot be before start date");
+            throw new BusinessException(
+                    "END_BEFORE_START",
+                    "End date cannot be before start date");
         }
 
-        if (days > 14) {
-            throw new RuntimeException("Loan cannot exceed 14 days");
+        if (days > maxDays) {
+            throw new BusinessException(
+                    "TOO_MANY_DAYS",
+                    "Loan cannot exceed 14 days");
         }
 
         List<Loan> gameLoans = loanRepository.findByGameId(data.getGameId());
@@ -113,7 +119,9 @@ public class LoanServiceImpl implements LoanService {
             boolean overlap = !data.getEndDate().isBefore(existing.getStartDate()) && !data.getStartDate().isAfter(existing.getEndDate());
 
             if (overlap) {
-                throw new RuntimeException("Game already loaned");
+                throw new BusinessException(
+                        "ALREADY_LOANED",
+                        "Game already loaned");
             }
         }
 
@@ -136,7 +144,9 @@ public class LoanServiceImpl implements LoanService {
             }
 
             if (activeLoans >= 2) {
-                throw new RuntimeException("Client cannot have more than 2 simultaneous loans");
+                throw new BusinessException(
+                        "MORE_THAN_TWO_LOANS",
+                        "Client cannot have more than 2 simultaneous loans");
             }
 
             day = day.plusDays(1);

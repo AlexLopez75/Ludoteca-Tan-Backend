@@ -1,6 +1,5 @@
 package com.ccsw.tutorial.loan;
 
-import com.ccsw.tutorial.loan.LoanService;
 import com.ccsw.tutorial.loan.model.Loan;
 import com.ccsw.tutorial.loan.model.LoanDto;
 import com.ccsw.tutorial.loan.model.LoanSearchDto;
