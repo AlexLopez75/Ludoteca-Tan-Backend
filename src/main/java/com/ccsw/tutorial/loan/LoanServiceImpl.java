@@ -94,6 +94,7 @@ public class LoanServiceImpl implements LoanService {
         }
 
         long days = ChronoUnit.DAYS.between(data.getStartDate(), data.getEndDate());
+
         LocalDate day = data.getStartDate();
         int maxDays = 14;
 

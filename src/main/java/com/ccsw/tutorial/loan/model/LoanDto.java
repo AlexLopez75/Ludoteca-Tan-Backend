@@ -134,4 +134,21 @@ public class LoanDto {
         this.endDate = endDate;
     }
 
+    public static LoanDto fromEntity(Loan loan) {
+
+        LoanDto dto = new LoanDto();
+
+        dto.setId(loan.getId());
+
+        dto.setClientId(loan.getClient().getId());
+        dto.setClientName(loan.getClient().getName());
+
+        dto.setGameId(loan.getGame().getId());
+        dto.setGameName(loan.getGame().getTitle());
+
+        dto.setStartDate(loan.getStartDate());
+        dto.setEndDate(loan.getEndDate());
+
+        return dto;
+    }
 }
